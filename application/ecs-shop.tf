@@ -1,7 +1,6 @@
 resource "aws_ecs_task_definition" "shop" {
-    cpu                      = "1400"
-    family                   = "${terraform.workspace}-ecommerce-shop"
-    memory                   = "1400"
+    family                   = "rsherman_${terraform.workspace}-ecommerce-shop"
+    memory                   = "14000"
     container_definitions    = jsonencode(
         [
             {
@@ -275,16 +274,17 @@ resource "aws_ecs_task_definition" "shop" {
 }
 
 data "aws_ecs_cluster" "demo" {
-  cluster_name = local.env
+  cluster_name = "rsherman_${local.env}"
 }
 
 data "aws_lb" "demo" {
-  name = local.env
+  name = "rsherman-${local.env}"
 }
 
 data "aws_vpc" "demo" {
   tags = {
-    env = local.env
+    env = local.env,
+    Creator = "rick.sherman"
   }
 }
 
@@ -294,7 +294,7 @@ data "aws_lb_listener" "demo" {
 }
 
 resource "aws_lb_target_group" "demo" {
-  name     = terraform.workspace
+  name     = "rsherman-${terraform.workspace}"
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.demo.id
@@ -323,7 +323,7 @@ resource "aws_lb_listener_rule" "demo" {
 }
 
 resource "aws_ecs_service" "shop" {
-  name            = "${terraform.workspace}-shop"
+  name            = "rsherman_${terraform.workspace}-shop"
   cluster         = data.aws_ecs_cluster.demo.arn
   task_definition = aws_ecs_task_definition.shop.arn
   force_new_deployment = true
@@ -338,7 +338,7 @@ resource "aws_ecs_service" "shop" {
 }
 
 resource "aws_route53_record" "demo" {
-  zone_id = "Z08208143ST38A83BB22T"
+  zone_id = var.r53_zone
   name    = local.hostname
   type    = "A"
 

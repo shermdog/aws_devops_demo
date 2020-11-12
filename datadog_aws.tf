@@ -1,6 +1,7 @@
 resource "datadog_integration_aws" "rick_demo" {
     account_id = var.aws_account_id
-    role_name = "DatadogAWSIntegrationRole"
+    role_name = "rsherman_DatadogAWSIntegrationRole"
+    filter_tags = ["Creator:rick.sherman"]
 }
 
 data "aws_iam_policy_document" "datadog_aws_integration_assume_role" {
@@ -23,7 +24,7 @@ data "aws_iam_policy_document" "datadog_aws_integration_assume_role" {
 }
 
 resource "aws_iam_policy" "datadog_aws_integration" {
-  name = "DatadogAWSIntegrationPolicy"
+  name = "rsherman_DatadogAWSIntegrationPolicy"
   policy = file("${path.module}/datadog_iam_all.json")
 }
 

@@ -1,11 +1,11 @@
 resource "aws_ecs_task_definition" "agent" {
-  family = "${terraform.workspace}-datadog-agent"
+  family = "rsherman_${terraform.workspace}-datadog-agent"
   requires_compatibilities = ["EC2"]
   container_definitions    = jsonencode(
       [
           {
               name            = "datadog-agent"
-              image           = "datadog/agent:latest"              
+              image           = "datadog/agent:latest"
               cpu             = 10
               environment     = [
                   {
@@ -128,7 +128,7 @@ resource "aws_ecs_task_definition" "agent" {
 }
 
 resource "aws_ecs_service" "agent" {
-  name            = "${terraform.workspace}-agent"
+  name            = "rsherman_${terraform.workspace}-agent"
   cluster         = aws_ecs_cluster.demo.id
   task_definition = aws_ecs_task_definition.agent.arn
   scheduling_strategy = "DAEMON"

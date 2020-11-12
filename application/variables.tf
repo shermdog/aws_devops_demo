@@ -9,6 +9,16 @@ variable "db_password" {
   default = "postgres"
 }
 
+variable "r53_zone" {
+  type        = string
+  description = "Route 53 DNS Zone"
+}
+
+variable "r53_domain" {
+  type        = string
+  description = "Route 53 domain"
+}
+
 variable "services" {
   type = map(object({
     framework                 = string,
@@ -25,7 +35,7 @@ variable "services" {
 locals {
   env = split("-", terraform.workspace)[0]
   hostname = local.env == "production" ? "prod" : terraform.workspace
-  domain = "aws.demo.shermdog.com"
+  domain = var.r53_domain
 }
 
 variable "app_version" {

@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ecs_instance_role" {
-    name                = "ecsInstanceRole"
+    name                = "rsherman_ecsInstanceRole"
     path                = "/"
     assume_role_policy  = data.aws_iam_policy_document.ecs_instance_policy.json
 }
@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "ecs_tag_policy" {
 }
 
 resource "aws_iam_role_policy" "ecs_tag_policy" {
-  name = "ecs_tag_policy"
+  name = "rsherman_ecs_tag_policy"
   role = aws_iam_role.ecs_instance_role.id
 
   policy = data.aws_iam_policy_document.ecs_tag_policy.json
@@ -43,7 +43,7 @@ resource "aws_iam_role_policy_attachment" "session_manager_role_attachment" {
 }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
-    name = "ecs-instance-profile"
+    name = "rsherman_ecs-instance-profile"
     path = "/"
     role = aws_iam_role.ecs_instance_role.id
 }

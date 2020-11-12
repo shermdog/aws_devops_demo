@@ -1,12 +1,13 @@
 resource "aws_lb" "demo" {
-  name               = terraform.workspace
+  name               = "rsherman-${terraform.workspace}"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.rick.id]
   subnets            = aws_subnet.demo.*.id
 
   tags = {
-    env = terraform.workspace
+    env = terraform.workspace,
+    Creator = "rick.sherman"
   }
 }
 

@@ -1,7 +1,9 @@
 resource "aws_ecs_cluster" "demo" {
-  name = terraform.workspace
+  name = "rsherman_${terraform.workspace}"
 
   tags = {
-    env = terraform.workspace
+    env = terraform.workspace,
+    Creator = "rick.sherman",
+    "terraform.managed" = "True"
   }
 }

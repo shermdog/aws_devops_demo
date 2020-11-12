@@ -13,7 +13,10 @@ resource "aws_vpc" "demo" {
   instance_tenancy = "default"
 
   tags = {
-    env = terraform.workspace
+    name = "rsherman_${terraform.workspace}"
+    env = terraform.workspace,
+    Creator = "rick.sherman",
+    "terraform.managed" = "True"
   }
 }
 
@@ -28,7 +31,10 @@ resource "aws_subnet" "demo" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    env = terraform.workspace
+    name = "rsherman_${terraform.workspace}_${count.index}"
+    env = terraform.workspace,
+    Creator = "rick.sherman",
+    "terraform.managed" = "True"
   }
 }
 
@@ -36,7 +42,10 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.demo.id
 
   tags = {
-    env = terraform.workspace
+    name = "rsherman_${terraform.workspace}"
+    env = terraform.workspace,
+    Creator = "rick.sherman",
+    "terraform.managed" = "True"
   }
 }
 
@@ -47,7 +56,10 @@ resource "aws_route_table" "rtb_public" {
         gateway_id = aws_internet_gateway.igw.id
     }
     tags = {
-      env = terraform.workspace
+      name = "rsherman_${terraform.workspace}"
+      env = terraform.workspace,
+      Creator = "rick.sherman",
+      "terraform.managed" = "True"
     }
 }
 
@@ -58,7 +70,7 @@ resource "aws_route_table_association" "rtb_public_association" {
 }
 
 resource "aws_security_group" "rick" {
-  name        = "allow_rick"
+  name        = "rsherman_allow_${terraform.workspace}"
   description = "Allow inbound traffic from Rick"
   vpc_id      = aws_vpc.demo.id
 
@@ -70,13 +82,13 @@ resource "aws_security_group" "rick" {
     cidr_blocks = ["${var.rick_ip}/32"]
   }
 
-  ingress {
-    description = "HTTP"
-    from_port   = 0
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # ingress {
+  #   description = "HTTP"
+  #   from_port   = 0
+  #   to_port     = 80
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   egress {
     from_port   = 0
@@ -86,12 +98,15 @@ resource "aws_security_group" "rick" {
   }
 
   tags = {
-    env = terraform.workspace
+    name = "rsherman_${terraform.workspace}"
+    env = terraform.workspace,
+    Creator = "rick.sherman",
+    "terraform.managed" = "True"
   }
 }
 
 resource "aws_security_group" "alb_to_shop" {
-  name        = "alb_to_shop"
+  name        = "rsherman_alb_to_shop_${terraform.workspace}"
   description = "Allow traffic from ALB to shop"
   vpc_id      = aws_vpc.demo.id
 
@@ -119,6 +134,9 @@ resource "aws_security_group" "alb_to_shop" {
   }
 
   tags = {
-    env = terraform.workspace
+    name = "rsherman_${terraform.workspace}"
+    env = terraform.workspace,
+    Creator = "rick.sherman",
+    "terraform.managed" = "True"
   }
 }
