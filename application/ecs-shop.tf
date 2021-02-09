@@ -228,43 +228,39 @@ resource "aws_ecs_task_definition" "shop" {
             {
               name         = "traffic-replay"
               image        = "shermdog/datadog-ecommerce-ecs:traffic-replay"
-              command      = [
-                  "sh",
-                  "docker-entrypoint.sh",
+              cpu          = 0
+              environment  = [
+                  {
+                      name  = "FRONTEND_HOST"
+                      value = "${local.hostname}.${local.domain}"
+                  },
+                  {
+                      name  = "FRONTEND_PORT"
+                      value = "80"
+                  },
+                  {
+                      name  = "DATADOG_SERVICE_NAME"
+                      value = "traffic-replay"
+                  },
+                  {
+                      name  = "DD_ENV"
+                      value = terraform.workspace
+                  },
+                  {
+                      name  = "DD_VERSION"
+                      value = tostring(var.app_version)
+                  },
               ]
-                cpu          = 0
-                environment  = [
-                    {
-                        name  = "FRONTEND_HOST"
-                        value = "${local.hostname}.${local.domain}"
-                    },
-                    {
-                        name  = "FRONTEND_PORT"
-                        value = "80"
-                    },
-                    {
-                        name  = "DATADOG_SERVICE_NAME"
-                        value = "traffic-replay"
-                    },
-                    {
-                        name  = "DD_ENV"
-                        value = terraform.workspace
-                    },
-                    {
-                        name  = "DD_VERSION"
-                        value = tostring(var.app_version)
-                    },
-                ]
-                "dockerLabels": {
-                  "com.datadoghq.tags.env": terraform.workspace,
-                  "com.datadoghq.tags.service": "traffic-replay",
-                  "com.datadoghq.tags.version": tostring(var.app_version)
-                }
-                essential    = true
-                links        = [
-                    "frontend",
-                ]
-                portMappings = []
+              "dockerLabels": {
+                "com.datadoghq.tags.env": terraform.workspace,
+                "com.datadoghq.tags.service": "traffic-replay",
+                "com.datadoghq.tags.version": tostring(var.app_version)
+              }
+              essential    = true
+              links        = [
+                  "frontend",
+              ]
+              portMappings = []
             },
         ]
     )
